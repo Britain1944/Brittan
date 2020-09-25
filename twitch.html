@@ -1,0 +1,74 @@
+<html>
+	<head></head>
+	<body style="margin:0px;background-color:black;overflow:hidden;">
+	<div id="player" style="width:100%;height:100%;"></div>
+	<script src="https://player.twitch.tv/js/embed/v1.js"></script>
+	<script>
+		var options = {
+    		width: "100%25",
+    		height: "100%25",
+    		channel: "insomniac",
+    		//video: "video ID",
+    		//collection: "collection ID",
+    		parent: ["swampservers.net"]
+    	};
+
+		var player = new Twitch.Player("player", options);
+
+		var player_ready = true;
+		var to_video = "insomniac";
+		var to_volume = 100;
+		var start_time = 0;
+		//var is_live = false;
+
+		var last_quality = "";
+
+		function th_video(id) {
+			to_video = id;
+		};
+
+		function th_volume( volume ) {
+			to_volume = volume;
+		};
+
+		function th_seek( seconds ) {
+			console.log("can't seek");
+		};
+
+		function think() {
+			if (player_ready) {
+				var quality = window.innerHeight < 700 ? "medium" : "chunked";
+
+				if (quality != last_quality) {
+					player.setQuality(quality);
+					last_quality = quality;
+
+					// get rid of spinner
+					player.pause();
+					player.play();
+				}
+
+				if (to_video !== null) {
+					player.setChannel(to_video);
+					player.setQuality(quality);
+				
+					// get rid of spinner
+					setTimeout(function() {
+							player.pause();
+							player.play();
+					}, 4000);
+
+					to_video = null;
+				}
+
+				if (to_volume !== null) {
+					player.setVolume(to_volume/100);
+					player.setMuted(to_volume==0);
+					to_volume = null;
+				}
+			}
+		}
+		setInterval(think, 100);
+		</script>
+	</body>
+</html>
